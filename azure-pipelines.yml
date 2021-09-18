@@ -1,59 +1,102 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# # ASP.NET Core
+# # Build and test ASP.NET Core projects targeting .NET Core.
+# # Add steps that run tests, create a NuGet package, deploy, and more:
+# # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+# trigger:
+# - master
+
+# pool:
+#   vmImage: ubuntu-latest
+
+# variables:
+#   buildConfiguration: 'Release'
+# steps:
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'restore'
+#     projects: '**/*.csproj'
+#     feedsToUse: 'select'
+#   displayName: 'Restore Nuget Packages'
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'build'
+#     projects: '**/*.csproj'
+#     arguments: '--no-restore'
+#   displayName: 'Build projects'
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'test'
+#     projects: '**/*Test.csproj'
+#     arguments: '--no-restore'
+#   displayName: 'Run Tests'
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'publish'
+#     publishWebProjects: false
+#     projects: '**/*Customer.Api.csproj'
+#     arguments: '--configuration $(buildConfiguration) --no-restore'
+#     modifyOutputPath: false
+#   displayName: 'Publish CustomerApi'
+# - task: PublishTestResults@2
+#   inputs:
+#     testResultsFormat: 'JUnit'
+#     testResultsFiles: '**/TEST-*.xml'
+# - task: ArchiveFiles@2
+#   displayName: 'Archive files'
+#   inputs:
+#     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+#     includeRootFolder: false
+#     archiveType: zip
+#     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+#     replaceExistingArchive: true
+ 
+# - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+#   artifact: drop
+
+
+name : NetCore-CustomerApi-CI
 trigger:
-- master
-
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - CustomerApi/*
+ 
 pool:
-  vmImage: ubuntu-latest
-
+  vmImage: 'ubuntu-latest'
+ 
 variables:
   buildConfiguration: 'Release'
+ 
 steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
-    projects: '**/*.csproj'
-    feedsToUse: 'select'
+    projects: '**/CustomerApi*.csproj'
   displayName: 'Restore Nuget Packages'
+ 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: '**/*.csproj'
+    projects: '**/CustomerApi*.csproj'
     arguments: '--no-restore'
   displayName: 'Build projects'
+ 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     projects: '**/*Test.csproj'
-    arguments: '--no-restore'
+    arguments: '--no-restore --no-build'
   displayName: 'Run Tests'
+ 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
     publishWebProjects: false
-    projects: '**/*Customer.Api.csproj'
+    projects: '**/CustomerApi.csproj'
     arguments: '--configuration $(buildConfiguration) --no-restore'
     modifyOutputPath: false
   displayName: 'Publish CustomerApi'
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/TEST-*.xml'
-- task: ArchiveFiles@2
-  displayName: 'Archive files'
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-    includeRootFolder: false
-    archiveType: zip
-    archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-    replaceExistingArchive: true
- 
-- upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
-  artifact: drop
-
-
-
 
