@@ -84,21 +84,21 @@ steps:
     arguments: '--no-restore'
   displayName: 'Build projects'
  
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    projects: '**/*Test.csproj'
-    arguments: '--no-restore --no-build'
-  displayName: 'Run Tests'
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'test'
+#     projects: '**/*Test.csproj'
+#     arguments: '--no-restore --no-build'
+#   displayName: 'Run Tests'
  
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'
-    publishWebProjects: false
-    projects: '**/CustomerApi.csproj'
-    arguments: '--configuration $(buildConfiguration) --no-restore'
-    modifyOutputPath: false
-  displayName: 'Publish CustomerApi'
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'publish'
+#     publishWebProjects: false
+#     projects: '**/CustomerApi.csproj'
+#     arguments: '--configuration $(buildConfiguration) --no-restore'
+#     modifyOutputPath: false
+#   displayName: 'Publish CustomerApi'
   
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
@@ -117,7 +117,7 @@ steps:
   displayName: 'Publish code coverage'  
   inputs:  
     codeCoverageTool: Cobertura  
-    summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'  
+    summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/coverage.cobertura.xml'  
 
 - task: ArchiveFiles@2
   displayName: 'Archive files'
