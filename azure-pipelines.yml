@@ -65,7 +65,7 @@ trigger:
       - CustomerApi/*
  
 pool:
-  vmImage: 'windows-latest''
+  vmImage: 'windows-latest'
  
 variables:
   buildConfiguration: 'Release'
