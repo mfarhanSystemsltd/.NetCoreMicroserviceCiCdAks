@@ -9,22 +9,24 @@ trigger:
     include:
       - master
   paths:
-    include:
-      - CustomerApi/*
+    include: # # trigger only if there is a change in CustomerApi folder
+      - CustomerApi/*   
  
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'windows-latest' # select windows as the agent
  
 variables:
   buildConfiguration: 'Release'
  
 steps:
-- task: DotNetCoreCLI@2
+# # Install all package dependencies to the correct state matching the package references in your project file (.csproj)
+- task: DotNetCoreCLI@2  
   inputs:
     command: 'restore'
     projects: '**/CustomerApi*.csproj'
   displayName: 'Restore Nuget Packages'
  
+ # # Build the dot net project with 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
@@ -32,6 +34,7 @@ steps:
     arguments: '--no-restore'
   displayName: 'Build projects'
  
+ # # Run the test cases and generate a coverage report
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
@@ -40,6 +43,7 @@ steps:
     arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./MyCoverage/'
     publishTestResults: true
  
+ # # Publish the coverage report to show it in the summary section
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish Code Coverage Results'
   inputs:
@@ -47,6 +51,7 @@ steps:
     summaryFileLocation: '$(Build.SourcesDirectory)/**/MyCoverage/coverage.cobertura.xml'
     failIfCoverageEmpty: true
 
+# # Create a ZIP of the project 
 - task: ArchiveFiles@2
   displayName: 'Archive files'
   inputs:
@@ -56,6 +61,7 @@ steps:
     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
     replaceExistingArchive: true
  
+ # # Publish the ZIP folder as an artifact to be used in the release pipeline
 - upload: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
   artifact: drop
 
