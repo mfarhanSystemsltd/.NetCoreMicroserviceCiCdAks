@@ -35,6 +35,9 @@ steps:
   displayName: 'Build projects'
  
  # # Run the test cases and generate a coverage report
+- task: CmdLine@2
+  inputs:
+     script: 'ls'
 - task: DotNetCoreCLI@2
   displayName: 'dotnet test'
   inputs:
